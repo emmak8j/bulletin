@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Bulletin{% endblock title %}
+
+{% block content %}
+{% for post in post_list %}
+<div class="card">
+    <div class="card-header">
+        <span class="fw-bold">
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </span> &middot;
+        <span><button>{{ post.tag }}</button></span>
+        <span class="text-muted">by {{ post.author }} | 
+            {{ post.date }}</span>
+    </div>
+    <div class="card-body">
+        {{ post.body }}
+    </div>
+    <div class="card-footer text-center text-muted">
+        {% if post.author.pk == request.user.pk %}
+        <a href="{% url 'post_edit' post.pk %}">Edit</a> 
+        <a href="{% url 'post_delete' post.pk %}">Delete</a>
+        {% endif %}
+
+        {% if post.author.pk != request.user.pk and request.user.is_manager %}
+        <a href="{% url 'post_delete' post.pk %}">Delete</a>
+        {% endif %}
+
+    </div>
+</div>
+<br />
+{% endfor %}
+{% endblock content %}
